@@ -7,15 +7,17 @@ use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 
 class PlanetaryIndustryController extends Controller {
     public function getCharacter() {
-        $character = auth()->user()->main_character['character_id'];
+        $character_id = auth()->user()->main_character['character_id'];
+        $character_name = CharacterHelper::getCharacterName($character_id);
 
-        return view('planetaryIndustry::home', compact('character'));
+        return view('planetaryIndustry::home', compact('character_name'));
     }
 
     public function getUser() {
-        $character = auth()->user()->main_character['character_id'];
-        $characters = CharacterHelper::getLinkedCharacters($character);
+        $character_id = auth()->user()->main_character['character_id'];
+        $character_name = CharacterHelper::getCharacterName($character_id);
+        $characters = CharacterHelper::getLinkedCharacters($character_id);
 
-        return view('planetaryIndustry::home', compact('character'));
+        return view('planetaryIndustry::home', compact('character_name'));
     }
 }
