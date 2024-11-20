@@ -8,12 +8,12 @@ Route::group([
     'prefix' => 'planetaryIndustry',
 ], function () {
     Route::get('/character')
-        ->name('PlanetaryIndustry.character')
+        ->name('planetaryIndustry.character')
         ->uses('PlanetaryIndustryController@getCharacter')
-        ->middleware('can:PlanetaryIndustry.all');
+        ->middleware('can:planetaryIndustry.all');
 
     Route::get('/user')
-        ->name('PlanetaryIndustry.user')
+        ->name('planetaryIndustry.user')
         ->uses('PlanetaryIndustryController@getUser')
-        ->middleware('can:PlanetaryIndustry.all');
+        ->middleware('can:planetaryIndustry.all');
 });
