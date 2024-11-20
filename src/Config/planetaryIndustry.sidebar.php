@@ -3,21 +3,21 @@
 return [
     'planetaryIndustry' => [
         'name'          => 'Planetary Industry',
-        'icon'          => 'fas fa-earth-asia',
+        'icon'          => 'fas fa-globe-asia',
         'route_segment' => 'planetary',
-        'permission'    => 'planetaryIndustry.all',
+        'permission'    => 'PlanetaryIndustry.all',
         'entries'       => [
             [
                 'name'  => 'By Character',
                 'icon'  => 'fas fa-user',
                 'route' => 'PlanetaryIndustry.character',
-                'permission' => 'planetaryIndustry.all',
+                'permission' => 'PlanetaryIndustry.all',
             ],
             [
                 'name'  => 'By User',
                 'icon'  => 'fas fa-users',
                 'route' => 'PlanetaryIndustry.user',
-                'permission' => 'planetaryIndustry.all',
+                'permission' => 'PlanetaryIndustry.all',
             ]
         ]
     ]
