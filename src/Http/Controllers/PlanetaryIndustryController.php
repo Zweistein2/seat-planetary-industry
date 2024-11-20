@@ -3,15 +3,19 @@
 namespace Zweistein2\Seat\PlanetaryIndustry\Http\Controllers;
 
 use Seat\Web\Http\Controllers\Controller;
-use Zweistein2\Seat\PlanetaryIndustry\Http\Datatables\CharacterPlanetaryIndustryDataTable;
-use Zweistein2\Seat\PlanetaryIndustry\Http\Datatables\UserPlanetaryIndustryDataTable;
+use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 
 class PlanetaryIndustryController extends Controller {
-    public function user(UserPlanetaryIndustryDataTable $dataTable) {
-        return $dataTable->render("planetaryIndustry::planettable");
+    public function getCharacter() {
+        $character = auth()->user()->main_character['character_id'];
+
+        return view('planetaryIndustry::home', compact('character'));
     }
 
-    public function character(CharacterPlanetaryIndustryDataTable $dataTable) {
-        return $dataTable->render("planetaryIndustry::planettable");
+    public function getUser() {
+        $character = auth()->user()->main_character['character_id'];
+        $characters = CharacterHelper::getLinkedCharacters($character);
+
+        return view('planetaryIndustry::home', compact('character'));
     }
 }

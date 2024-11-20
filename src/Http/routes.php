@@ -7,15 +7,13 @@ Route::group([
     'middleware' => ['web', 'auth', 'locale'],
     'prefix' => 'planetaryIndustry',
 ], function () {
-    Route::get('/character', [
-        'as'   => 'PlanetaryIndustry.character',
-        'uses' => 'PlanetaryIndustryController@character',
-        'middleware' => 'can:PlanetaryIndustry.all'
-    ]);
+    Route::get('/character')
+        ->name('PlanetaryIndustry.character')
+        ->uses('PlanetaryIndustryController@getCharacter')
+        ->middleware('can:PlanetaryIndustry.all');
 
-    Route::get('/user', [
-        'as'   => 'PlanetaryIndustry.user',
-        'uses' => 'PlanetaryIndustryController@user',
-        'middleware' => 'can:PlanetaryIndustry.all'
-    ]);
+    Route::get('/user')
+        ->name('PlanetaryIndustry.user')
+        ->uses('PlanetaryIndustryController@getUser')
+        ->middleware('can:PlanetaryIndustry.all');
 });
