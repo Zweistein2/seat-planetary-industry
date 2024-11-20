@@ -10,13 +10,13 @@ return [
             [
                 'name'  => 'By Character',
                 'icon'  => 'fas fa-user',
-                'route' => 'planetaryIndustry.character',
+                'route' => 'PlanetaryIndustry.character',
                 'permission' => 'planetaryIndustry.all',
             ],
             [
                 'name'  => 'By User',
                 'icon'  => 'fas fa-users',
-                'route' => 'planetaryIndustry.user',
+                'route' => 'PlanetaryIndustry.user',
                 'permission' => 'planetaryIndustry.all',
             ]
         ]
