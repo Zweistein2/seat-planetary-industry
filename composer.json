@@ -1,0 +1,36 @@
+{
+  "name": "zweistein2/seat-pi",
+  "description": "Planetary Industry monitoring",
+  "license": "MIT",
+  "type": "seat-plugin",
+  "authors": [
+    {
+      "name": "Zweistein2",
+      "email": "fkarolat@yahoo.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Zweistein2\\Seat\\PlanetaryIndustry\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": "^10.0",
+    "eveseat/web": "^5.0.18",
+    "eveseat/eveapi": "^5.0.16",
+    "eveseat/services": "^5.0.8",
+    "eveseat/notifications": "^5.0.10",
+    "recursivetree/seat-treelib": "^2.1",
+    "recursivetree/seat-prices-core": "^1.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Zweistein2\\Seat\\PlanetaryIndustry\\PlanetaryIndustryServiceProvider"
+      ]
+    }
+  }
+}
