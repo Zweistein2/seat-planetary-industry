@@ -2,7 +2,7 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Models;
 
-class CharacterData {
+class CharacterPlanets {
     /**
      * @var int
      */
@@ -37,6 +37,11 @@ class CharacterData {
      * @var array
      */
     public $cycleHistory = [];
+
+    /**
+     * @var array
+     */
+    public $labels = [];
 
 
     /**

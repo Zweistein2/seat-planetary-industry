@@ -8,6 +8,7 @@ class PlanetaryIndustryServiceProvider extends AbstractSeatPlugin {
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         $this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'planetaryIndustry');
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'planetaryIndustry');
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
     }
 
     public function register(): void {

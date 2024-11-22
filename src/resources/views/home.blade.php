@@ -47,7 +47,7 @@
     <div class="row">
         <div class="col-md-4 col-sm-6">
             <div class="info-box">
-                <span class="info-box-icon bg-indigo elevation-1"><i class="fa fa-warehouse"></i></span>
+                <span class="info-box-icon bg-yellow elevation-1"><i class="fa fa-warehouse"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Total Extracted Resources <small>(this month)</small></span>
                     <span class="info-box-number">
@@ -58,7 +58,7 @@
         </div>
         <div class="col-md-4 col-sm-6">
             <div class="info-box">
-                <span class="info-box-icon bg-blue elevation-1"><i class="fa fa-boxes"></i></span>
+                <span class="info-box-icon bg-red elevation-1"><i class="fa fa-boxes"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Total Extracted Volume <small>(this month)</small></span>
                     <span class="info-box-number">
@@ -69,7 +69,7 @@
         </div>
         <div class="col-md-4 col-sm-6">
             <div class="info-box">
-                <span class="info-box-icon bg-purple elevation-1"><i class="fa fa-coins"></i></span>
+                <span class="info-box-icon bg-blue elevation-1"><i class="fa fa-coins"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Total Extracted ISK <small>(this month)</small></span>
                     <span class="info-box-number">

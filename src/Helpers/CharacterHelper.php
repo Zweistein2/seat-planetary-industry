@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class CharacterHelper {
-
     /**
      * return the MainCharacter for any linked characters
      * @param int $character_id
@@ -39,7 +38,6 @@ class CharacterHelper {
      * @return string
      */
     public static function getCharacterName(int $character_id): string {
-
         $data = DB::table('character_infos')
             ->select('name')
             ->where('character_id', '=', $character_id)
