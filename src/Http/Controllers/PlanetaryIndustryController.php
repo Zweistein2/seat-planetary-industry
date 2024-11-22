@@ -19,7 +19,7 @@ class PlanetaryIndustryController extends Controller {
         $character_id = auth()->user()->main_character['character_id'];
         $character_name = CharacterHelper::getCharacterName($character_id);
         $characters = CharacterHelper::getLinkedCharacters($character_id);
-        $maincharacter_id = CharacterHelper::getMainCharacterCharacter($character_id);
+        $maincharacter_id = CharacterHelper::getMainCharacterCharacter($character_id)->character_id;
         $planets = new CharacterPlanets($character_id, $maincharacter_id, $character_name);
 
         $labels = array();
