@@ -1,6 +1,6 @@
 @extends('web::layouts.grids.12')
 
-@section('title', "Planetary Industry | $character_name")
+@section('title', "Planetary Industry | DEBUG")
 @section('page_header', "Planetary Industry")
 
 @push('head')
