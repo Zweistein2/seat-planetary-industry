@@ -10,10 +10,6 @@
 
 @section('full')
     <div class="row">
-        @foreach($db as $line)
-            <tr>
-                <td>{{ $line }}</td>
-            </tr>
-        @endforeach
+        @dump
     </div>
 @stop
