@@ -10,6 +10,6 @@
 
 @section('full')
     <div class="row">
-        @dump
+        @dump($db)
     </div>
 @stop
