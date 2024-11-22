@@ -2,8 +2,8 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Seat\Web\Http\Controllers\Controller;
-use Seat\Web\Http\DataTables\Character\Industrial\PlanetaryInteractionDataTable;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\CharacterPlanets;
 
