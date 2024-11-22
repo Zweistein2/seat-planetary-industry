@@ -53,8 +53,29 @@ class PlanetaryIndustryController extends Controller {
             $year = (int)date('Y', $datum);
         }
 
-        $db = DB::table('character_planets')->selectRaw('*')->get();
-        return view('planetaryIndustry::debug', compact('db'));
+        $db = DB::table('character_planets as pl')
+            ->select('pl.*', 'fa.pin_id', 'ex.pin_id', 'ex.product_type_id', 'ex.cycle_time', 'ex.qty_per_cycle', 'co.pin_id', 'co.type_id', 'co.amount')
+            ->join('character_planet_factories as fa', 'fa.planet_id', '=', 'pl.planet_id')
+            ->join('character_planet_extractors as ex', 'ex.planet_id', '=', 'pl.planet_id')
+            ->join('character_planet_contents as co', 'co.planet_id', '=', 'pl.planet_id')
+            ->join('character_planet_pins as pi', 'pi.planet_id', '=', 'pl.planet_id')
+            ->get();
+        $planetDB = DB::table('character_planets')
+            ->select('*')
+            ->get();
+        $factoryDB = DB::table('character_planet_factories')
+            ->select('*')
+            ->get();
+        $extractorDB = DB::table('character_planet_extractors')
+            ->select('*')
+            ->get();
+        $contentDB = DB::table('character_planet_contents')
+            ->select('*')
+            ->get();
+        $pinDB = DB::table('character_planet_pins')
+            ->select('*')
+            ->get();
+        return view('planetaryIndustry::debug', compact('db', 'planetDB', 'factoryDB', 'extractorDB', 'contentDB', 'pinDB'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
