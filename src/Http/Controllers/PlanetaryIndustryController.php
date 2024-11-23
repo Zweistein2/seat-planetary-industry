@@ -120,7 +120,7 @@ class PlanetaryIndustryController extends Controller {
                         ->get();
 
                     foreach($storages as $storage) {
-                        if($userPlanet->storages && $userPlanet->storages[$storage->pin_id]) {
+                        if($userPlanet->storages && array_key_exists($storage->pin_id, $userPlanet->storages)) {
                             $planetStorage = $userPlanet->storages[$storage->pin_id];
 
                             $planetStorage->storageTypeId[] = $storage->type_id;
