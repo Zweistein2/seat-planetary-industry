@@ -93,7 +93,6 @@ class PlanetaryIndustryController extends Controller {
 
                     $factories = DB::table('character_planet_pins as pi')
                         ->select('pi.pin_id', 'pi.type_id', 'pi.schematic_id', 'pi.last_cycle_start')
-                        ->join('character_planet_extractors as ex', 'ex.pin_id', '=', 'pi.pin_id')
                         // todo: add storage
                         //->join('character_planet_contents as co', 'co.pin_id', '=', 'pi.pin_id')
                         ->whereNotNull('pi.schematic_id')
@@ -120,7 +119,7 @@ class PlanetaryIndustryController extends Controller {
                         ->get();
 
                     foreach($storages as $storage) {
-                        if($userPlanet->storages && array_key_exists($storage->pin_id, $userPlanet->storages)) {
+                        if(isset($userPlanet->storages[$storage->pin_id])) {
                             $planetStorage = $userPlanet->storages[$storage->pin_id];
 
                             $planetStorage->storageTypeId[] = $storage->type_id;
