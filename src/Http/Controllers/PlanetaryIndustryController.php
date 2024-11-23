@@ -130,7 +130,7 @@ class PlanetaryIndustryController extends Controller {
                             $planetStorage->storageTypeId[] = $storage->type_id;
                             $planetStorage->storageAmount[] = $storage->amount;
 
-                            $userPlanet->storages[] = $planetStorage;
+                            $userPlanet->storages[$storage->pin_id] = $planetStorage;
                         }
                     }
 
