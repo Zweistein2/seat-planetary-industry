@@ -10,11 +10,6 @@
 
 @section('full')
     <div class="row">
-        @dump($db)
-        @dump($planetDB)
-        @dump($factoryDB)
-        @dump($extractorDB)
-        @dump($contentDB)
-        @dump($pinDB)
+        @dump($userPlanets)
     </div>
 @stop
