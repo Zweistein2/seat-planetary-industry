@@ -140,7 +140,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        return view('planetaryIndustry::debug', compact($userPlanets));
+        return view('planetaryIndustry::debug', compact('userPlanets'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
