@@ -3,8 +3,9 @@
 namespace Zweistein2\Seat\PlanetaryIndustry\Http\Controllers;
 
 use DateTime;
-use Exception;
 use Illuminate\Support\Facades\DB;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Web\Http\Controllers\Controller;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
@@ -14,9 +15,16 @@ use Zweistein2\Seat\PlanetaryIndustry\Models\Storage;
 use Zweistein2\Seat\PlanetaryIndustry\Models\UserPlanets;
 
 class PlanetaryIndustryController extends Controller {
-    public function getCharacter() {
+    private CharacterPlanet $derp;
+
+    public function getCharacter(CharacterInfo $characterInfo) {
+        $routes = (array) $characterInfo->colonies();
+        $this->derp = $routes[0];
+        $userPlanets = $this->derp;
         $character_id = auth()->user()->main_character['character_id'];
         $character_name = CharacterHelper::getCharacterName($character_id);
+
+        return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
         return view('planetaryIndustry::home', compact('character_name'));
     }
