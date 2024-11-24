@@ -15,12 +15,9 @@ use Zweistein2\Seat\PlanetaryIndustry\Models\Storage;
 use Zweistein2\Seat\PlanetaryIndustry\Models\UserPlanets;
 
 class PlanetaryIndustryController extends Controller {
-    private CharacterPlanet $derp;
-
     public function getCharacter(CharacterInfo $characterInfo) {
         $routes = (array) $characterInfo->colonies();
-        $this->derp = $routes[0];
-        $userPlanets = $this->derp;
+        $userPlanets = array();
         $character_id = auth()->user()->main_character['character_id'];
         $character_name = CharacterHelper::getCharacterName($character_id);
 
