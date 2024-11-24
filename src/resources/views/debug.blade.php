@@ -11,5 +11,7 @@
 @section('full')
     <div class="row">
         @dump($userPlanets)
+        @dump($routes)
+        @include('web::partials.type', ['type_id' => '2288', 'type_name' => 'Carbon Compounds'])
     </div>
 @stop

@@ -139,7 +139,11 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        return view('planetaryIndustry::debug', compact('userPlanets'));
+        $routes = DB::table('character_planet_routes')
+            ->select('*')
+            ->get();
+
+        return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
