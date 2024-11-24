@@ -18,7 +18,7 @@ class PlanetaryIndustryController extends Controller {
     public function getCharacter() {
         $routes = DB::table('invTypes')
             ->select('*')
-            ->get();
+            ->first();
         $userPlanets = array();
         $character_id = auth()->user()->main_character['character_id'];
         $character_name = CharacterHelper::getCharacterName($character_id);
