@@ -9,6 +9,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Web\Http\Controllers\Controller;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
+use Zweistein2\Seat\PlanetaryIndustry\Models\ExtractorCycle;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Factory;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Planet;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Storage;
@@ -129,6 +130,7 @@ class PlanetaryIndustryController extends Controller {
 
                                 $yield = $decay * (1 + $noiseFactor * $sinX);
                                 $totalYield = $totalYield + floor($yield);
+                                $planetExtractor->cycles[] = new ExtractorCycle($cycle, $yield, $totalYield);
                             }
 
                             $planetExtractor->totalYield = $totalYield;

@@ -71,6 +71,11 @@ class Extractor {
     public DateTime $lastCycleStart;
 
     /**
+     * @var ExtractorCycle[]
+     */
+    public array $cycles;
+
+    /**
      *
      * Constructor
      *
