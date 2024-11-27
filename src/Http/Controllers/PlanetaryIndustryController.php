@@ -102,14 +102,14 @@ class PlanetaryIndustryController extends Controller {
                         }
 
                         if($extractor->install_time == $extractor->last_cycle_start) {
-                            $planetExtractor->initialQtyPerCycle = $extractor->qtyPerCycle;
+                            $planetExtractor->initialQtyPerCycle = $extractor->qty_per_cycle;
 
                             // dgmAttributes!
                             // Decay 1683 - 0.012
                             // Noise 1687 - 0.8
                             $decayFactor = 0.012;
                             $noiseFactor = 0.8;
-                            $shift = pow($extractor->qtyPerCycle, 0.7);
+                            $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
                             $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
                             $runtimeMinutes = $runtime->h * 60 + $runtime->i;
                             $cycles = $runtimeMinutes / ($extractor->cycle_time / 60);
@@ -121,7 +121,7 @@ class PlanetaryIndustryController extends Controller {
                             $totalYield = 0;
 
                             for($cycle = 0; $cycle < $cycles; $cycle++) {
-                                $decay = $extractor->qtyPerCycle / (1.0 + $cycle * $decayFactor);
+                                $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $cycle * $decayFactor);
                                 $sinA = cos($shift + $cycle * $noise1);
                                 $sinB = cos(($shift / 2) + $cycle * $noise2);
                                 $sinC = cos($cycle * $noise3);
