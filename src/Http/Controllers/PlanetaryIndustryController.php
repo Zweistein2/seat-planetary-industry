@@ -122,14 +122,20 @@ class PlanetaryIndustryController extends Controller {
                             $totalYield = 0.0;
 
                             for($cycle = 0; $cycle < $cycles; $cycle++) {
-                                $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $cycle * $decayFactor);
-                                $sinA = cos($shift + $cycle * $noise1);
-                                $sinB = cos(($shift / 2) + $cycle * $noise2);
-                                $sinC = cos($cycle * $noise3);
-                                $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
+                                $yield = 0;
 
-                                $yield = $decay * (1 + $noiseFactor * $sinX);
-                                $totalYield = $totalYield + floor($yield);
+                                for($point = $cycle; $point <= $cycle + 1; $point = $point + 0.25) {
+                                    $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $point * $decayFactor);
+                                    $sinA = cos($shift + $point * $noise1);
+                                    $sinB = cos(($shift / 2) + $point * $noise2);
+                                    $sinC = cos($point * $noise3);
+                                    $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
+
+                                    $yield += $decay * (1 + $noiseFactor * $sinX);
+                                }
+
+                                $yield = floor($yield / 5);
+                                $totalYield = $totalYield + $yield;
                                 $planetExtractor->cycles[] = new ExtractorCycle($cycle, $yield, $totalYield);
                             }
 
