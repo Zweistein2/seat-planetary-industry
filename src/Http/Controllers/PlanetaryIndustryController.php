@@ -113,7 +113,8 @@ class PlanetaryIndustryController extends Controller {
                             $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
                             $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
                             $runtimeMinutes = $runtime->h * 60 + $runtime->i;
-                            $cycles = $runtimeMinutes / ($extractor->cycle_time / 60);
+                            $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
+                            $cycleFactor = $planetExtractor->cycleTime / (60 * 15);
 
                             $noise1 = 1.0 / 12.0;
                             $noise2 = 1.0 / 5.0;
@@ -124,17 +125,20 @@ class PlanetaryIndustryController extends Controller {
                             for($cycle = 0; $cycle < $cycles; $cycle++) {
                                 $yield = 0;
 
-                                for($point = $cycle; $point <= $cycle + 1; $point = $point + 0.25) {
-                                    $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $point * $decayFactor);
-                                    $sinA = cos($shift + $point * $noise1);
-                                    $sinB = cos(($shift / 2) + $point * $noise2);
-                                    $sinC = cos($point * $noise3);
-                                    $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
+                                $point = ($cycle + 0.5) * $cycleFactor;
+                                $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $point * $decayFactor);
+                                $sinA = cos($shift + $point * $noise1);
+                                $sinB = cos(($shift / 2) + $point * $noise2);
+                                $sinC = cos($point * $noise3);
+                                $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
 
-                                    $yield += $decay * (1 + $noiseFactor * $sinX);
-                                }
+                                $yield += $cycleFactor * ($decay * (1 + $noiseFactor * $sinX));
 
-                                $yield = floor($yield / 5);
+                                //for($point = $cycle; $point <= $cycle + 1; $point = $point + 0.25) {
+                                //}
+
+                                //$yield = floor($yield / 5);
+                                $yield = floor($yield);
                                 $totalYield = $totalYield + $yield;
                                 $planetExtractor->cycles[] = new ExtractorCycle($cycle, $yield, $totalYield);
                             }
