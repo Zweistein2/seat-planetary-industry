@@ -69,13 +69,27 @@ class PlanetaryIndustryController extends Controller {
 
             if(!$planets->isEmpty()) {
                 foreach($planets as $planet) {
+                    $storagesAlreadyFound = array();
+
                     $userPlanet = new Planet($character, $planet->planet_id, $planet->solar_system_id, $planet->planet_type);
 
                     $extractors = DB::table('character_planet_pins as pi')
                         ->select('pi.pin_id', 'pi.install_time', 'pi.expiry_time', 'pi.last_cycle_start', 'ex.product_type_id', 'ex.cycle_time', 'ex.qty_per_cycle')
                         ->join('character_planet_extractors as ex', 'ex.pin_id', '=', 'pi.pin_id')
-                        // todo: add storage
-                        //->join('character_planet_contents as co', 'co.pin_id', '=', 'pi.pin_id')
+                        ->where('pi.planet_id', '=', $userPlanet->planetId)
+                        ->where('pi.character_id', '=', $character)
+                        ->get();
+
+                    $factories = DB::table('character_planet_pins as pi')
+                        ->select('pi.pin_id', 'pi.type_id', 'pi.schematic_id', 'pi.last_cycle_start')
+                        ->whereNotNull('pi.schematic_id')
+                        ->where('pi.planet_id', '=', $userPlanet->planetId)
+                        ->where('pi.character_id', '=', $character)
+                        ->get();
+
+                    $storages = DB::table('character_planet_contents as co')
+                        ->select('pi.pin_id', 'pi.type_id', 'co.type_id', 'co.amount')
+                        ->join('character_planet_pins as pi', 'pi.pin_id', '=', 'co.pin_id')
                         ->where('pi.planet_id', '=', $userPlanet->planetId)
                         ->where('pi.character_id', '=', $character)
                         ->get();
@@ -100,6 +114,15 @@ class PlanetaryIndustryController extends Controller {
                             $planetExtractor->lastCycleStart = new DateTime($extractor->last_cycle_start);
                         } else {
                             $planetExtractor->lastCycleStart = new DateTime();
+                        }
+
+                        foreach($storages as $storage) {
+                            if($storage->pin_id == $extractor->pin_id) {
+                                $storagesAlreadyFound[$extractor->pin_id] = true;
+
+                                $planetExtractor->storageAmount = $storage->amount;
+                                $planetExtractor->storageTypeId = $storage->type_id;
+                            }
                         }
 
                         if($extractor->install_time == $extractor->last_cycle_start) {
@@ -133,14 +156,9 @@ class PlanetaryIndustryController extends Controller {
                                 $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
 
                                 $yield += $cycleFactor * ($decay * (1 + $noiseFactor * $sinX));
+                                $totalYield = $totalYield + floor($yield);
 
-                                //for($point = $cycle; $point <= $cycle + 1; $point = $point + 0.25) {
-                                //}
-
-                                //$yield = floor($yield / 5);
-                                $yield = floor($yield);
-                                $totalYield = $totalYield + $yield;
-                                $planetExtractor->cycles[] = new ExtractorCycle($cycle, $yield, $totalYield);
+                                $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield);
                             }
 
                             $planetExtractor->totalYield = $totalYield;
@@ -149,17 +167,17 @@ class PlanetaryIndustryController extends Controller {
                         $userPlanet->extractors[] = $planetExtractor;
                     }
 
-                    $factories = DB::table('character_planet_pins as pi')
-                        ->select('pi.pin_id', 'pi.type_id', 'pi.schematic_id', 'pi.last_cycle_start')
-                        // todo: add storage
-                        //->join('character_planet_contents as co', 'co.pin_id', '=', 'pi.pin_id')
-                        ->whereNotNull('pi.schematic_id')
-                        ->where('pi.planet_id', '=', $userPlanet->planetId)
-                        ->where('pi.character_id', '=', $character)
-                        ->get();
-
                     foreach($factories as $factory) {
                         $planetFactory = new Factory($factory->pin_id, $planet->planet_id, $character, $factory->type_id);
+
+                        foreach($storages as $storage) {
+                            if($storage->pin_id == $factory->pin_id) {
+                                $storagesAlreadyFound[$factory->pin_id] = true;
+
+                                $planetFactory->storageAmount = $storage->amount;
+                                $planetFactory->storageTypeId = $storage->type_id;
+                            }
+                        }
 
                         $planetFactory->schematicId = $factory->schematic_id;
                         if($factory->last_cycle_start) {
@@ -169,26 +187,21 @@ class PlanetaryIndustryController extends Controller {
                         $userPlanet->factories[] = $planetFactory;
                     }
 
-                    $storages = DB::table('character_planet_contents as co')
-                        ->select('pi.pin_id', 'pi.type_id', 'co.type_id', 'co.amount')
-                        ->join('character_planet_pins as pi', 'pi.pin_id', '=', 'co.pin_id')
-                        ->where('pi.planet_id', '=', $userPlanet->planetId)
-                        ->where('pi.character_id', '=', $character)
-                        ->get();
-
                     foreach($storages as $storage) {
-                        if(isset($userPlanet->storages[$storage->pin_id])) {
-                            $planetStorage = $userPlanet->storages[$storage->pin_id];
+                        if(!isset($storagesAlreadyFound[$storage->pin_id])) {
+                            if(isset($userPlanet->storages[$storage->pin_id])) {
+                                $planetStorage = $userPlanet->storages[$storage->pin_id];
 
-                            $planetStorage->storageTypeId[] = $storage->type_id;
-                            $planetStorage->storageAmount[] = $storage->amount;
-                        } else {
-                            $planetStorage = new Storage($storage->pin_id, $planet->planet_id, $character, $storage->type_id);
+                                $planetStorage->storageTypeId[] = $storage->type_id;
+                                $planetStorage->storageAmount[] = $storage->amount;
+                            } else {
+                                $planetStorage = new Storage($storage->pin_id, $planet->planet_id, $character, $storage->type_id);
 
-                            $planetStorage->storageTypeId[] = $storage->type_id;
-                            $planetStorage->storageAmount[] = $storage->amount;
+                                $planetStorage->storageTypeId[] = $storage->type_id;
+                                $planetStorage->storageAmount[] = $storage->amount;
 
-                            $userPlanet->storages[$storage->pin_id] = $planetStorage;
+                                $userPlanet->storages[$storage->pin_id] = $planetStorage;
+                            }
                         }
                     }
 
