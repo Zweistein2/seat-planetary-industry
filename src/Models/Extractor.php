@@ -51,9 +51,19 @@ class Extractor {
     public int $initialQtyPerCycle;
 
     /**
+     * @var float
+     */
+    public float $priceExtracted;
+
+    /**
      * @var int
      */
-    public int $totalYield;
+    public int $amountExtracted;
+
+    /**
+     * @var float
+     */
+    public float $volumeExtracted;
 
     /**
      * @var DateTime
@@ -93,7 +103,9 @@ class Extractor {
         $this->storageTypeId = 0;
         $this->storageAmount = 0;
         $this->initialQtyPerCycle = 0;
-        $this->totalYield = 0;
+        $this->priceExtracted = 0.0;
+        $this->amountExtracted = 0;
+        $this->volumeExtracted = 0.0;
         $this->installTime = new DateTime("1900-01-01 00:00:00");
         $this->expiryTime = new DateTime("1900-01-01 00:00:00");
         $this->lastCycleStart = new DateTime("1900-01-01 00:00:00");

@@ -8,6 +8,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Web\Http\Controllers\Controller;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
+use Zweistein2\Seat\PlanetaryIndustry\Helpers\ItemHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\PriceHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
 use Zweistein2\Seat\PlanetaryIndustry\Models\ExtractorCycle;
@@ -166,11 +167,14 @@ class PlanetaryIndustryController extends Controller {
                                 $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield);
                             }
 
-                            $planetExtractor->totalYield = $totalYield;
+                            $planetExtractor->amountExtracted = $totalYield;
+                            // Get Volume by TypeID
+                            $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
+                            $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
 
-                            $userPlanet->priceExtracted = $userPlanet->priceExtracted + PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->totalYield;
-                            $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->totalYield;
-                            $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->totalYield;
+                            $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
+                            $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
+                            $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->volumeExtracted;
                         }
 
                         $userPlanet->extractors[] = $planetExtractor;
