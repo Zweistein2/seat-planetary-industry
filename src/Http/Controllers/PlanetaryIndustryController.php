@@ -169,7 +169,7 @@ class PlanetaryIndustryController extends Controller {
 
                             $planetExtractor->amountExtracted = $totalYield;
                             // Get Volume by TypeID
-                            $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
+                            $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId)->volume *  $planetExtractor->amountExtracted;
                             $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
 
                             $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
