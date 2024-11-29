@@ -24,6 +24,51 @@ class Planet {
     public string $planetType;
 
     /**
+     * @var float
+     */
+    public float $priceExtracted;
+
+    /**
+     * @var int
+     */
+    public int $amountExtracted;
+
+    /**
+     * @var float
+     */
+    public float $volumeExtracted;
+
+    /**
+     * @var float
+     */
+    public float $priceProduced;
+
+    /**
+     * @var int
+     */
+    public int $amountProduced;
+
+    /**
+     * @var float
+     */
+    public float $volumeProduced;
+
+    /**
+     * @var float
+     */
+    public float $priceUsed;
+
+    /**
+     * @var int
+     */
+    public int $amountUsed;
+
+    /**
+     * @var float
+     */
+    public float $volumeUsed;
+
+    /**
      * @var Extractor[]
      */
     public array $extractors = array();
@@ -52,5 +97,14 @@ class Planet {
         $this->planetId = $planetId;
         $this->solarSystemId = $solarSystemId;
         $this->planetType = $planetType;
+        $this->priceExtracted = 0.0;
+        $this->amountExtracted = 0;
+        $this->volumeExtracted = 0.0;
+        $this->priceProduced = 0.0;
+        $this->amountProduced = 0;
+        $this->volumeProduced = 0.0;
+        $this->priceUsed = 0.0;
+        $this->amountUsed = 0;
+        $this->volumeUsed = 0.0;
     }
 }

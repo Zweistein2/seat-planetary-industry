@@ -8,6 +8,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Web\Http\Controllers\Controller;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
+use Zweistein2\Seat\PlanetaryIndustry\Helpers\PriceHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
 use Zweistein2\Seat\PlanetaryIndustry\Models\ExtractorCycle;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Factory;
@@ -60,6 +61,10 @@ class PlanetaryIndustryController extends Controller {
             $month = (int)date('m', $datum);
             $year = (int)date('Y', $datum);
         }
+
+        $totalPriceExtracted = 0.0;
+        $totalAmountExtracted = 0;
+        $totalVolumeExtracted = 0.0;
 
         foreach($characters as $character) {
             $planets = DB::table('character_planets')
@@ -162,6 +167,10 @@ class PlanetaryIndustryController extends Controller {
                             }
 
                             $planetExtractor->totalYield = $totalYield;
+
+                            $userPlanet->priceExtracted = $userPlanet->priceExtracted + PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->totalYield;
+                            $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->totalYield;
+                            $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->totalYield;
                         }
 
                         $userPlanet->extractors[] = $planetExtractor;
@@ -184,6 +193,11 @@ class PlanetaryIndustryController extends Controller {
                             $planetFactory->lastCycleStart = new DateTime($factory->last_cycle_start);
                         }
 
+                        // "extract" schematic by id: schematicId -> input (amount + type), output (amount + type)
+                        //$userPlanet->priceExtracted = $userPlanet->priceExtracted + PriceHelper::getItemPriceById($planetFactory->storageTypeId) *  $planetFactory->totalYield;
+                        //$userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->totalYield;
+                        //$userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->totalYield;
+
                         $userPlanet->factories[] = $planetFactory;
                     }
 
@@ -204,6 +218,10 @@ class PlanetaryIndustryController extends Controller {
                             }
                         }
                     }
+
+                    $userPlanets->totalPriceExtracted = $userPlanets->totalPriceExtracted + $userPlanet->priceExtracted;
+                    $userPlanets->totalAmountExtracted = $userPlanets->totalAmountExtracted + $userPlanet->amountExtracted;
+                    $userPlanets->totalVolumeExtracted = $userPlanets->totalVolumeExtracted + $userPlanet->volumeExtracted;
 
                     $userPlanets->planets[] = $userPlanet;
                 }
