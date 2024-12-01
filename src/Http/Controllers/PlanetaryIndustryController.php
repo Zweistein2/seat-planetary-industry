@@ -70,14 +70,16 @@ class PlanetaryIndustryController extends Controller {
         $totalAmountExtracted = 0;
         $totalVolumeExtracted = 0.0;
 
-        $decayFactor = DB::table('dgmTypeAttributes')
-            ->select('defaultValue')
-            ->where('attributeID', '=', '1683')
-            ->first();
-        $noiseFactor = DB::table('dgmTypeAttributes')
-            ->select('defaultValue')
-            ->where('attributeID', '=', '1687')
-            ->first();
+        $decayFactor = 0.012;
+        $noiseFactor = 0.8;
+        // $decayFactor = DB::table('dgmTypeAttributes')
+        //     ->select('defaultValue')
+        //     ->where('attributeID', '=', '1683')
+        //     ->first();
+        // $noiseFactor = DB::table('dgmTypeAttributes')
+        //     ->select('defaultValue')
+        //     ->where('attributeID', '=', '1687')
+        //     ->first();
 
         $schematicTypes = DB::table('planetSchematics')
             ->select('schematicID', 'cycleTime')
@@ -279,8 +281,8 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = DB::table('planetSchematics')
-            ->select('*')
+        $routes = DB::table('dgmTypeAttributes')
+            ->where('attributeID', '=', '1683')
             ->first();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
