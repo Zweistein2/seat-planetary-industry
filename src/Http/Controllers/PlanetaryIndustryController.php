@@ -253,7 +253,7 @@ class PlanetaryIndustryController extends Controller {
         //$routes = DB::table('character_planet_routes')
         $routes = DB::table('invTypes')
             ->select('*')
-            ->get();
+            ->first();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
