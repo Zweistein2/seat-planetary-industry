@@ -238,7 +238,7 @@ class PlanetaryIndustryController extends Controller {
                         $planetRoute->contentTypeId = $route->content_type_id;
                         $planetRoute->contentAmount = $route->quantity;
 
-                        $planet->routes[] = $planetRoute;
+                        $userPlanet->routes[] = $planetRoute;
                     }
 
                     $userPlanets->totalPriceExtracted = $userPlanets->totalPriceExtracted + $userPlanet->priceExtracted;
