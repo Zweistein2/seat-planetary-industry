@@ -199,9 +199,11 @@ class PlanetaryIndustryController extends Controller {
                             }
                         }
 
-                        $planetFactory->schematicId = $factory->schematic_id;
+                        //$planetFactory->schematicId = $factory->schematic_id;
                         if($factory->last_cycle_start) {
                             $planetFactory->lastCycleStart = new DateTime($factory->last_cycle_start);
+                        } else {
+                            $planetFactory->lastCycleStart = new DateTime();
                         }
 
                         // "extract" schematic by id: schematicId -> input (amount + type), output (amount + type)
@@ -250,9 +252,8 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = DB::table('invTypes')
+        $routes = DB::table('planetSchematics')
             ->select('*')
-            ->where('typeID', '=', '2016')
             ->first();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));

@@ -9,6 +9,7 @@ class PlanetaryIndustryServiceProvider extends AbstractSeatPlugin {
         $this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'planetaryIndustry');
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'planetaryIndustry');
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->registerSdeTables(['planetSchematics', 'planetSchematicsTypeMap']);
     }
 
     public function register(): void {

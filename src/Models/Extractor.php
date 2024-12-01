@@ -83,7 +83,7 @@ class Extractor {
     /**
      * @var ExtractorCycle[]
      */
-    public array $cycles;
+    public array $cycles = array();
 
     /**
      *

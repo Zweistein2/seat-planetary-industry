@@ -26,9 +26,9 @@ class Factory {
     public int $typeId;
 
     /**
-     * @var int
+     * @var FactorySchematic
      */
-    public int $schematicId;
+    public FactorySchematic $schematic;
 
     /**
      * @var int
@@ -76,6 +76,16 @@ class Factory {
     public DateTime $lastCycleStart;
 
     /**
+     * @var DateTime
+     */
+    public DateTime $expiryTime;
+
+    /**
+     * @var FactoryCycle[]
+     */
+    public array $cycles = array();
+
+    /**
      *
      * Constructor
      *
@@ -89,7 +99,6 @@ class Factory {
         $this->planetId = $planetId;
         $this->characterId = $characterId;
         $this->typeId = $typeId;
-        $this->schematicId = 0;
         $this->storageTypeId = 0;
         $this->storageAmount = 0;
         $this->priceProduced = 0.0;
@@ -98,6 +107,7 @@ class Factory {
         $this->priceUsed = 0.0;
         $this->amountUsed = 0;
         $this->volumeUsed = 0.0;
+        $this->expiryTime = new DateTime("1900-01-01 00:00:00");
         $this->lastCycleStart = new DateTime("1900-01-01 00:00:00");
     }
 }
