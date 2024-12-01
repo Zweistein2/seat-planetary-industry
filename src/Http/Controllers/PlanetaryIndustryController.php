@@ -73,11 +73,11 @@ class PlanetaryIndustryController extends Controller {
         $decayFactor = DB::table('dgmTypeAttributes')
             ->select('defaultValue')
             ->where('attributeID', '=', '1683')
-            ->first()->defaultValue;
+            ->first();
         $noiseFactor = DB::table('dgmTypeAttributes')
             ->select('defaultValue')
             ->where('attributeID', '=', '1687')
-            ->first()->defaultValue;
+            ->first();
 
         $schematicTypes = DB::table('planetSchematics')
             ->select('schematicID', 'cycleTime')
