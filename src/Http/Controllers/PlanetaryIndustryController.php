@@ -250,9 +250,9 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        //$routes = DB::table('character_planet_routes')
         $routes = DB::table('invTypes')
             ->select('*')
+            ->where('typeID', '=', '2016')
             ->first();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
