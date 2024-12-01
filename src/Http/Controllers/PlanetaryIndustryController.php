@@ -282,7 +282,7 @@ class PlanetaryIndustryController extends Controller {
         }
 
         $routes = DB::table('dgmTypeAttributes')
-        //    ->where('attributeID', '=', '1683')
+            ->select('*')
             ->get();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
