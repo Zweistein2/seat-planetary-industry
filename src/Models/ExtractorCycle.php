@@ -2,8 +2,6 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Models;
 
-use DateTime;
-
 class ExtractorCycle {
     /**
      * @var int

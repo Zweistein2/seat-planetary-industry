@@ -13,6 +13,8 @@ use Zweistein2\Seat\PlanetaryIndustry\Helpers\PriceHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
 use Zweistein2\Seat\PlanetaryIndustry\Models\ExtractorCycle;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Factory;
+use Zweistein2\Seat\PlanetaryIndustry\Models\FactorySchematic;
+use Zweistein2\Seat\PlanetaryIndustry\Models\FactorySchematicItem;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Planet;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Route;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Storage;
@@ -67,6 +69,22 @@ class PlanetaryIndustryController extends Controller {
         $totalPriceExtracted = 0.0;
         $totalAmountExtracted = 0;
         $totalVolumeExtracted = 0.0;
+
+        $decayFactor = DB::table('dgmTypeAttributes')
+            ->select('defaultValue')
+            ->where('attributeID', '=', '1683')
+            ->first()->defaultValue;
+        $noiseFactor = DB::table('dgmTypeAttributes')
+            ->select('defaultValue')
+            ->where('attributeID', '=', '1687')
+            ->first()->defaultValue;
+
+        $schematicTypes = DB::table('planetSchematics')
+            ->select('schematicID', 'cycleTime')
+            ->get();
+        $schematicTypeMap = DB::table('planetSchematicsTypeMap')
+            ->select('schematicID', 'typeID', 'quantity', 'isInput')
+            ->get();
 
         foreach($characters as $character) {
             $planets = DB::table('character_planets')
@@ -142,11 +160,6 @@ class PlanetaryIndustryController extends Controller {
                         if($extractor->install_time == $extractor->last_cycle_start) {
                             $planetExtractor->initialQtyPerCycle = $extractor->qty_per_cycle;
 
-                            // dgmAttributes!
-                            // Decay 1683 - 0.012
-                            // Noise 1687 - 0.8
-                            $decayFactor = 0.012;
-                            $noiseFactor = 0.8;
                             $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
                             $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
                             $runtimeMinutes = $runtime->h * 60 + $runtime->i;
@@ -199,14 +212,28 @@ class PlanetaryIndustryController extends Controller {
                             }
                         }
 
-                        //$planetFactory->schematicId = $factory->schematic_id;
+                        foreach($schematicTypes as $schematicType) {
+                            if($schematicType->schematicID == $factory->schematic_id) {
+                                $planetFactory->schematic = new FactorySchematic($schematicType->schematicID, $schematicType->cycleTime);
+
+                                foreach($schematicTypeMap as $schematicTypeMapEntry) {
+                                    if($schematicTypeMapEntry->schematicID == $schematicType->schematicID) {
+                                        $planetFactory->schematic->items[] = new FactorySchematicItem($schematicTypeMapEntry->typeID, $schematicTypeMapEntry->quantity, $schematicTypeMapEntry->isInput);
+                                    }
+                                }
+                            }
+                        }
+
+                        // TODO: Cycles berechnen
+                        // TODO: ExpiryTime berechnen
+                        // TODO: used/produced-Amounts berechnen
+
                         if($factory->last_cycle_start) {
                             $planetFactory->lastCycleStart = new DateTime($factory->last_cycle_start);
                         } else {
                             $planetFactory->lastCycleStart = new DateTime();
                         }
 
-                        // "extract" schematic by id: schematicId -> input (amount + type), output (amount + type)
                         //$userPlanet->priceExtracted = $userPlanet->priceExtracted + PriceHelper::getItemPriceById($planetFactory->storageTypeId) *  $planetFactory->totalYield;
                         //$userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->totalYield;
                         //$userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->totalYield;

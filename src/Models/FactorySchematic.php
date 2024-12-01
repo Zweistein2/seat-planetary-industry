@@ -2,8 +2,6 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Models;
 
-use DateTime;
-
 class FactorySchematic {
     /**
      * @var int
@@ -14,6 +12,11 @@ class FactorySchematic {
      * @var int
      */
     public int $cycleTime;
+
+    /**
+     * @var FactorySchematicItem[]
+     */
+    public array $items = array();
 
     /**
      * Constructor
