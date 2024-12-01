@@ -24,6 +24,11 @@ class Planet {
     public string $planetType;
 
     /**
+     * @var int
+     */
+    public int $planetTypeId;
+
+    /**
      * @var float
      */
     public float $priceExtracted;
@@ -84,6 +89,11 @@ class Planet {
     public array $storages = array();
 
     /**
+     * @var Route[]
+     */
+    public array $routes = array();
+
+    /**
      *
      * Constructor
      *
@@ -92,11 +102,12 @@ class Planet {
      * @param int $solarSystemId
      * @param string $planetType
      */
-    public function __construct(int $characterId, int $planetId, int $solarSystemId, string $planetType) {
+    public function __construct(int $characterId, int $planetId, int $solarSystemId) {
         $this->characterId = $characterId;
         $this->planetId = $planetId;
         $this->solarSystemId = $solarSystemId;
-        $this->planetType = $planetType;
+        $this->planetType = "";
+        $this->planetTypeId = 0;
         $this->priceExtracted = 0.0;
         $this->amountExtracted = 0;
         $this->volumeExtracted = 0.0;
@@ -106,5 +117,21 @@ class Planet {
         $this->priceUsed = 0.0;
         $this->amountUsed = 0;
         $this->volumeUsed = 0.0;
+    }
+
+    public function setPlanetType(string $planetType) {
+        $this->planetType = $planetType;
+
+        $this->planetTypeId = match ($planetType) {
+            "temperate" => 11,
+            "ice" => 12,
+            "gas" => 13,
+            "oceanic" => 2014,
+            "lava" => 2015,
+            "barren" => 2016,
+            "storm" => 2017,
+            "plasma" => 2063,
+            default => 0,
+        };
     }
 }

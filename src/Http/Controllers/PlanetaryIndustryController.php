@@ -14,6 +14,7 @@ use Zweistein2\Seat\PlanetaryIndustry\Models\Extractor;
 use Zweistein2\Seat\PlanetaryIndustry\Models\ExtractorCycle;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Factory;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Planet;
+use Zweistein2\Seat\PlanetaryIndustry\Models\Route;
 use Zweistein2\Seat\PlanetaryIndustry\Models\Storage;
 use Zweistein2\Seat\PlanetaryIndustry\Models\UserPlanets;
 
@@ -77,7 +78,8 @@ class PlanetaryIndustryController extends Controller {
                 foreach($planets as $planet) {
                     $storagesAlreadyFound = array();
 
-                    $userPlanet = new Planet($character, $planet->planet_id, $planet->solar_system_id, $planet->planet_type);
+                    $userPlanet = new Planet($character, $planet->planet_id, $planet->solar_system_id);
+                    $userPlanet->setPlanetType($planet->planet_type);
 
                     $extractors = DB::table('character_planet_pins as pi')
                         ->select('pi.pin_id', 'pi.install_time', 'pi.expiry_time', 'pi.last_cycle_start', 'ex.product_type_id', 'ex.cycle_time', 'ex.qty_per_cycle')
@@ -86,11 +88,11 @@ class PlanetaryIndustryController extends Controller {
                         ->where('pi.character_id', '=', $character)
                         ->get();
 
-                    $factories = DB::table('character_planet_pins as pi')
-                        ->select('pi.pin_id', 'pi.type_id', 'pi.schematic_id', 'pi.last_cycle_start')
-                        ->whereNotNull('pi.schematic_id')
-                        ->where('pi.planet_id', '=', $userPlanet->planetId)
-                        ->where('pi.character_id', '=', $character)
+                    $factories = DB::table('character_planet_pins')
+                        ->select('pin_id', 'type_id', 'schematic_id', 'last_cycle_start')
+                        ->whereNotNull('schematic_id')
+                        ->where('planet_id', '=', $userPlanet->planetId)
+                        ->where('character_id', '=', $character)
                         ->get();
 
                     $storages = DB::table('character_planet_contents as co')
@@ -98,6 +100,12 @@ class PlanetaryIndustryController extends Controller {
                         ->join('character_planet_pins as pi', 'pi.pin_id', '=', 'co.pin_id')
                         ->where('pi.planet_id', '=', $userPlanet->planetId)
                         ->where('pi.character_id', '=', $character)
+                        ->get();
+
+                    $routes = DB::table('character_planet_routes')
+                        ->select('route_id', 'source_pin_id', 'destination_pin_id', 'content_type_id', 'quantity')
+                        ->where('planet_id', '=', $userPlanet->planetId)
+                        ->where('character_id', '=', $character)
                         ->get();
 
                     foreach($extractors as $extractor) {
@@ -168,7 +176,6 @@ class PlanetaryIndustryController extends Controller {
                             }
 
                             $planetExtractor->amountExtracted = $totalYield;
-                            // Get Volume by TypeID
                             $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId)->volume *  $planetExtractor->amountExtracted;
                             $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
 
@@ -223,6 +230,17 @@ class PlanetaryIndustryController extends Controller {
                         }
                     }
 
+                    foreach($routes as $route) {
+                        $planetRoute = new Route($route->route_id, $planet->planet_id, $character);
+
+                        $planetRoute->sourcePinId = $route->source_pin_id;
+                        $planetRoute->targetPinId = $route->destination_pin_id;
+                        $planetRoute->contentTypeId = $route->content_type_id;
+                        $planetRoute->contentAmount = $route->quantity;
+
+                        $planet->routes[] = $planetRoute;
+                    }
+
                     $userPlanets->totalPriceExtracted = $userPlanets->totalPriceExtracted + $userPlanet->priceExtracted;
                     $userPlanets->totalAmountExtracted = $userPlanets->totalAmountExtracted + $userPlanet->amountExtracted;
                     $userPlanets->totalVolumeExtracted = $userPlanets->totalVolumeExtracted + $userPlanet->volumeExtracted;
@@ -232,7 +250,8 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = DB::table('character_planet_routes')
+        //$routes = DB::table('character_planet_routes')
+        $routes = DB::table('invTypes')
             ->select('*')
             ->get();
 
