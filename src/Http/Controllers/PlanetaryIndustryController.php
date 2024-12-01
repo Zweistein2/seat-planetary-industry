@@ -281,9 +281,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = DB::table('dgmTypeAttributes')
-            ->select('*')
-            ->get();
+        $routes = array();
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
