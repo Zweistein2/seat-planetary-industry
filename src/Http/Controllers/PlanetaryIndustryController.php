@@ -5,8 +5,6 @@ namespace Zweistein2\Seat\PlanetaryIndustry\Http\Controllers;
 use DateInterval;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\DB;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Web\Http\Controllers\Controller;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\CharacterHelper;
 use Zweistein2\Seat\PlanetaryIndustry\Helpers\ItemHelper;
@@ -230,8 +228,8 @@ class PlanetaryIndustryController extends Controller {
                             }
                         }
 
-                        // TODO: Cycles berechnen
                         // TODO: Routen von Extractor -> Storage -> Facility und Storage -> Facility erstellen/verketten
+                        // TODO: Cycles berechnen
                         // TODO: ExpiryTime berechnen
                         // TODO: used/produced-Amounts berechnen
 
@@ -246,6 +244,17 @@ class PlanetaryIndustryController extends Controller {
                         //$userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->totalYield;
 
                         $userPlanet->factories[] = $planetFactory;
+                    }
+
+                    foreach($routes as $route) {
+                        $planetRoute = new Route($route->route_id, $planet->planet_id, $character);
+
+                        $planetRoute->sourcePinId = $route->source_pin_id;
+                        $planetRoute->targetPinId = $route->destination_pin_id;
+                        $planetRoute->contentTypeId = $route->content_type_id;
+                        $planetRoute->contentAmount = $route->quantity;
+
+                        $userPlanet->routes[] = $planetRoute;
                     }
 
                     foreach($storages as $storage) {
@@ -266,17 +275,6 @@ class PlanetaryIndustryController extends Controller {
                         }
                     }
 
-                    foreach($routes as $route) {
-                        $planetRoute = new Route($route->route_id, $planet->planet_id, $character);
-
-                        $planetRoute->sourcePinId = $route->source_pin_id;
-                        $planetRoute->targetPinId = $route->destination_pin_id;
-                        $planetRoute->contentTypeId = $route->content_type_id;
-                        $planetRoute->contentAmount = $route->quantity;
-
-                        $userPlanet->routes[] = $planetRoute;
-                    }
-
                     $userPlanets->totalPriceExtracted = $userPlanets->totalPriceExtracted + $userPlanet->priceExtracted;
                     $userPlanets->totalAmountExtracted = $userPlanets->totalAmountExtracted + $userPlanet->amountExtracted;
                     $userPlanets->totalVolumeExtracted = $userPlanets->totalVolumeExtracted + $userPlanet->volumeExtracted;
@@ -286,10 +284,40 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = array();
+        $routes = $this::linkRoutes($userPlanets[0]->routes);
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
+    }
+
+    private function linkRoutes(array $routes): array {
+        $sourceToRoute = [];
+        $targetToRoute = [];
+
+        foreach ($routes as $route) {
+            $sourceToRoute[$route->sourcePinId] = $route;
+            $targetToRoute[$route->targetPinId] = $route;
+        }
+
+        $linkedRoutes = [];
+        $visited = [];
+
+        foreach ($routes as $route) {
+            if (!isset($targetToRoute[$route->sourcePinId]) && !isset($visited[$route->routeId])) {
+                $currentRoute = $route;
+                $chain = [];
+                while (isset($sourceToRoute[$currentRoute->targetPinId])) {
+                    $chain[] = $currentRoute;
+                    $visited[$currentRoute->routeId] = true;
+                    $currentRoute = $sourceToRoute[$currentRoute->targetPinId];
+                }
+                $chain[] = $currentRoute;
+                $visited[$currentRoute->routeId] = true;
+                $linkedRoutes[] = $chain;
+            }
+        }
+
+        return $linkedRoutes;
     }
 }
