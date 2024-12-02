@@ -2,7 +2,8 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Http\Controllers;
 
-use DateTime;
+use DateInterval;
+use DateTimeImmutable;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
@@ -135,19 +136,19 @@ class PlanetaryIndustryController extends Controller {
                         $planetExtractor->cycleTime = $extractor->cycle_time;
                         $planetExtractor->qtyPerCycle = $extractor->qty_per_cycle;
                         if($extractor->install_time) {
-                            $planetExtractor->installTime = new DateTime($extractor->install_time);
+                            $planetExtractor->installTime = new DateTimeImmutable($extractor->install_time);
                         } else {
-                            $planetExtractor->installTime = new DateTime();
+                            $planetExtractor->installTime = new DateTimeImmutable();
                         }
                         if($extractor->expiry_time) {
-                            $planetExtractor->expiryTime = new DateTime($extractor->expiry_time);
+                            $planetExtractor->expiryTime = new DateTimeImmutable($extractor->expiry_time);
                         } else {
-                            $planetExtractor->expiryTime = new DateTime();
+                            $planetExtractor->expiryTime = new DateTimeImmutable();
                         }
                         if($extractor->last_cycle_start) {
-                            $planetExtractor->lastCycleStart = new DateTime($extractor->last_cycle_start);
+                            $planetExtractor->lastCycleStart = new DateTimeImmutable($extractor->last_cycle_start);
                         } else {
-                            $planetExtractor->lastCycleStart = new DateTime();
+                            $planetExtractor->lastCycleStart = new DateTimeImmutable();
                         }
 
                         foreach($storages as $storage) {
@@ -187,7 +188,10 @@ class PlanetaryIndustryController extends Controller {
                                 $yield += $cycleFactor * ($decay * (1 + $noiseFactor * $sinX));
                                 $totalYield = $totalYield + floor($yield);
 
-                                $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield);
+                                $cycleEndFromInstall = new DateInterval('PT'.($cycle + 1) * $planetExtractor->cycleTime.'S');
+                                $cycleEnd = $planetExtractor->installTime->add($cycleEndFromInstall);
+
+                                $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield, $cycleEnd);
                             }
 
                             $planetExtractor->amountExtracted = $totalYield;
@@ -227,13 +231,14 @@ class PlanetaryIndustryController extends Controller {
                         }
 
                         // TODO: Cycles berechnen
+                        // TODO: Routen von Extractor -> Storage -> Facility und Storage -> Facility erstellen/verketten
                         // TODO: ExpiryTime berechnen
                         // TODO: used/produced-Amounts berechnen
 
                         if($factory->last_cycle_start) {
-                            $planetFactory->lastCycleStart = new DateTime($factory->last_cycle_start);
+                            $planetFactory->lastCycleStart = new DateTimeImmutable($factory->last_cycle_start);
                         } else {
-                            $planetFactory->lastCycleStart = new DateTime();
+                            $planetFactory->lastCycleStart = new DateTimeImmutable();
                         }
 
                         //$userPlanet->priceExtracted = $userPlanet->priceExtracted + PriceHelper::getItemPriceById($planetFactory->storageTypeId) *  $planetFactory->totalYield;

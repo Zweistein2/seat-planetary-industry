@@ -2,7 +2,7 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Models;
 
-use DateTime;
+use DateTimeImmutable;
 
 class Factory {
     /**
@@ -71,14 +71,14 @@ class Factory {
     public float $volumeUsed;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
-    public DateTime $lastCycleStart;
+    public DateTimeImmutable $lastCycleStart;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
-    public DateTime $expiryTime;
+    public DateTimeImmutable $expiryTime;
 
     /**
      * @var FactoryCycle[]
@@ -107,7 +107,7 @@ class Factory {
         $this->priceUsed = 0.0;
         $this->amountUsed = 0;
         $this->volumeUsed = 0.0;
-        $this->expiryTime = new DateTime("1900-01-01 00:00:00");
-        $this->lastCycleStart = new DateTime("1900-01-01 00:00:00");
+        $this->expiryTime = new DateTimeImmutable("1900-01-01 00:00:00");
+        $this->lastCycleStart = new DateTimeImmutable("1900-01-01 00:00:00");
     }
 }

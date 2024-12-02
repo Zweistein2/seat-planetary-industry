@@ -2,7 +2,7 @@
 
 namespace Zweistein2\Seat\PlanetaryIndustry\Models;
 
-use DateTime;
+use DateTimeImmutable;
 
 class Extractor {
     /**
@@ -66,19 +66,19 @@ class Extractor {
     public float $volumeExtracted;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
-    public DateTime $installTime;
+    public DateTimeImmutable $installTime;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
-    public DateTime $expiryTime;
+    public DateTimeImmutable $expiryTime;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
-    public DateTime $lastCycleStart;
+    public DateTimeImmutable $lastCycleStart;
 
     /**
      * @var ExtractorCycle[]
@@ -106,8 +106,8 @@ class Extractor {
         $this->priceExtracted = 0.0;
         $this->amountExtracted = 0;
         $this->volumeExtracted = 0.0;
-        $this->installTime = new DateTime("1900-01-01 00:00:00");
-        $this->expiryTime = new DateTime("1900-01-01 00:00:00");
-        $this->lastCycleStart = new DateTime("1900-01-01 00:00:00");
+        $this->installTime = new DateTimeImmutable("1900-01-01 00:00:00");
+        $this->expiryTime = new DateTimeImmutable("1900-01-01 00:00:00");
+        $this->lastCycleStart = new DateTimeImmutable("1900-01-01 00:00:00");
     }
 }
