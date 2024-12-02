@@ -284,7 +284,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = $this::linkRoutes($userPlanets[0]->routes);
+        $routes = $this::linkRoutes($userPlanets->planets[0]->routes);
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
