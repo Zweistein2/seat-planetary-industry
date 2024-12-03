@@ -307,13 +307,19 @@ class PlanetaryIndustryController extends Controller {
         }
 
         $linkedRoutes = [];
-
         $currentRoute = $startRoute;
         $chain = [];
+
         while (isset($sourceToRoute[$currentRoute->targetPinId])) {
             $chain[] = $currentRoute;
             $currentRoute = $sourceToRoute[$currentRoute->targetPinId];
+
+            // Break the loop if we encounter a route that is already in the chain to avoid infinite loop
+            if (in_array($currentRoute, $chain, true)) {
+                break;
+            }
         }
+
         $chain[] = $currentRoute;
         $linkedRoutes[] = $chain;
 
