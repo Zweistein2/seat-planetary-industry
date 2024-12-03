@@ -87,9 +87,6 @@ class PlanetaryIndustryController extends Controller {
             ->select('schematicID', 'typeID', 'quantity', 'isInput')
             ->get();
 
-        $test = new Route(1, 1, 1);
-        $type = 0;
-
         foreach($characters as $character) {
             $planets = DB::table('character_planets')
                 ->select('planet_id', 'solar_system_id', 'planet_type')
@@ -249,6 +246,8 @@ class PlanetaryIndustryController extends Controller {
                         $userPlanet->factories[] = $planetFactory;
                     }
 
+                    $allRoutes = [];
+
                     foreach($routes as $route) {
                         $planetRoute = new Route($route->route_id, $planet->planet_id, $character);
 
@@ -257,12 +256,23 @@ class PlanetaryIndustryController extends Controller {
                         $planetRoute->contentTypeId = $route->content_type_id;
                         $planetRoute->contentAmount = $route->quantity;
 
-                        foreach($extractors as $extractor) {
-                            if($planetRoute->sourcePinId == $extractor->pin_id) {
-                                $type = $extractor->product_type_id;
-                                $test = $planetRoute;
+                        $allRoutes[] = $planetRoute;
+                    }
 
-                                $userPlanet->routes[] = $this::linkRoutes([], $userPlanets->planets[0]->routes, $test, $type);
+                    foreach($allRoutes as $route) {
+                        foreach($extractors as $extractor) {
+                            if($route->sourcePinId == $extractor->pin_id) {
+                                $userPlanet->routes[] = $this::linkRoutes([], $allRoutes, $route, $extractor->product_type_id);
+                            }
+                        }
+
+                        foreach($factories as $factory) {
+                            if($route->sourcePinId == $factory->pin_id) {
+                                foreach($schematicTypeMap as $schematicTypeMapEntry) {
+                                    if($schematicTypeMapEntry->schematicID == $factory->schematic_id && !$schematicTypeMapEntry->isInput) {
+                                        $userPlanet->routes[] = $this::linkRoutes([], $allRoutes, $route, $schematicTypeMapEntry->typeID);
+                                    }
+                                }
                             }
                         }
                     }
