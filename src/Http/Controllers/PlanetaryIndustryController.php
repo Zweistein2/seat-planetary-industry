@@ -88,6 +88,7 @@ class PlanetaryIndustryController extends Controller {
             ->get();
 
         $test = new Route(1, 1, 1);
+        $types = [];
 
         foreach($characters as $character) {
             $planets = DB::table('character_planets')
@@ -258,6 +259,21 @@ class PlanetaryIndustryController extends Controller {
 
                         foreach($extractors as $extractor) {
                             if($planetRoute->sourcePinId == $extractor->pin_id) {
+                                $types = array_merge($types, [$extractor->product_type_id]);
+                                $foundSchematics = [];
+
+                                foreach($schematicTypeMap as $schematicTypeMapEntry) {
+                                    if($schematicTypeMapEntry->typeID == $extractor->product_type_id && $schematicTypeMapEntry->isInput) {
+                                        $foundSchematics[] = $schematicTypeMapEntry->schematicID;
+                                    }
+                                }
+
+                                foreach($schematicTypeMap as $schematicTypeMapEntry) {
+                                    if(in_array($schematicTypeMapEntry->schematicID, $foundSchematics, true) && !$schematicTypeMapEntry->isInput) {
+                                        $types = array_merge($types, [$schematicTypeMapEntry->typeID]);
+                                    }
+                                }
+
                                 $test = $planetRoute;
                             }
                         }
@@ -292,36 +308,29 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = $this::linkRoutes($userPlanets->planets[0]->routes, $test);
+        $routes = $this::linkRoutes($userPlanets->planets[0]->routes, $test, $types);
 
-        return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
+        return view('planetaryIndustry::debug', compact('userPlanets', 'routes', 'types'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
 
-    private function linkRoutes(array $routes, Route $startRoute): array {
-        $sourceToRoute = [];
-
-        foreach ($routes as $route) {
-            $sourceToRoute[$route->sourcePinId] = $route;
-        }
-
+    /**
+     * @param Route[] $routes the routes to be searched through
+     * @param Route $startRoute the route to start the search from
+     * @param int[] $allowedTypes the allowed items types on the route
+     * @return Route[] the linked routes
+     */
+    private function linkRoutes(array $routes, Route $startRoute, array $allowedTypes): array {
         $linkedRoutes = [];
-        $currentRoute = $startRoute;
-        $chain = [];
+        $linkedRoutes[] = $startRoute;
 
-        while (isset($sourceToRoute[$currentRoute->targetPinId])) {
-            $chain[] = $currentRoute;
-            $currentRoute = $sourceToRoute[$currentRoute->targetPinId];
-
-            // Break the loop if we encounter a route that is already in the chain to avoid infinite loop
-            if (in_array($currentRoute, $chain, true)) {
-                break;
+        foreach($routes as $route) {
+            if($route->sourcePinId == $startRoute->targetPinId && !in_array($route, $linkedRoutes, true) && in_array($route->contentTypeId, $allowedTypes, true)) {
+                $linkedRoutes[] = $route;
+                $linkedRoutes = array_merge($linkedRoutes, $this::linkRoutes($routes, $route, $allowedTypes));
             }
         }
-
-        $chain[] = $currentRoute;
-        $linkedRoutes[] = $chain;
 
         return $linkedRoutes;
     }

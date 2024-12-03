@@ -12,6 +12,7 @@
     <div class="row">
         @dump($userPlanets)
         @dump($routes)
+        @dump($types)
         @include('web::partials.type', ['type_id' => '2267', 'type_name' => 'Carbon Compounds'])
     </div>
 @stop
