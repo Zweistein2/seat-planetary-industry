@@ -89,7 +89,7 @@ class Planet {
     public array $storages = array();
 
     /**
-     * @var Route[]
+     * @var Route[][]
      */
     public array $routes = array();
 
@@ -100,7 +100,6 @@ class Planet {
      * @param int $characterId
      * @param int $planetId
      * @param int $solarSystemId
-     * @param string $planetType
      */
     public function __construct(int $characterId, int $planetId, int $solarSystemId) {
         $this->characterId = $characterId;
@@ -119,7 +118,12 @@ class Planet {
         $this->volumeUsed = 0.0;
     }
 
-    public function setPlanetType(string $planetType) {
+    /**
+     * Sets the planet type and typeID
+     *
+     * @param string $planetType the planet type as string
+     */
+    public function setPlanetType(string $planetType): void {
         $this->planetType = $planetType;
 
         $this->planetTypeId = match ($planetType) {
