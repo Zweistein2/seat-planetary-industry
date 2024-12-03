@@ -87,6 +87,8 @@ class PlanetaryIndustryController extends Controller {
             ->select('schematicID', 'typeID', 'quantity', 'isInput')
             ->get();
 
+        $test = new Route(1, 1, 1);
+
         foreach($characters as $character) {
             $planets = DB::table('character_planets')
                 ->select('planet_id', 'solar_system_id', 'planet_type')
@@ -254,6 +256,12 @@ class PlanetaryIndustryController extends Controller {
                         $planetRoute->contentTypeId = $route->content_type_id;
                         $planetRoute->contentAmount = $route->quantity;
 
+                        foreach($extractors as $extractor) {
+                            if($planetRoute->sourcePinId == $extractor->pin_id) {
+                                $test = $planetRoute;
+                            }
+                        }
+
                         $userPlanet->routes[] = $planetRoute;
                     }
 
@@ -284,7 +292,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = $this::linkRoutes($userPlanets->planets[0]->routes);
+        $routes = $this::linkRoutes($userPlanets->planets[0]->routes, $test);
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes'));
 
