@@ -259,6 +259,7 @@ class PlanetaryIndustryController extends Controller {
 
                         foreach($extractors as $extractor) {
                             if($planetRoute->sourcePinId == $extractor->pin_id) {
+                                $types = [];
                                 $types = array_merge($types, [$extractor->product_type_id]);
                                 $foundSchematics = [];
 
@@ -309,7 +310,7 @@ class PlanetaryIndustryController extends Controller {
         }
 
         //$routes = $this::linkRoutes($userPlanets->planets[0]->routes, $test, $types);
-        $routes = [];
+        $routes = [$test];
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes', 'types'));
 
