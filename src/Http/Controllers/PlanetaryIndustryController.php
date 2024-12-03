@@ -324,11 +324,10 @@ class PlanetaryIndustryController extends Controller {
      */
     private function linkRoutes(array $routes, Route $startRoute, array $allowedTypes): array {
         $linkedRoutes = [];
-        $linkedRoutes[] = $startRoute;
+        $linkedRoutes = array_merge($linkedRoutes, [$startRoute]);
 
         foreach($routes as $route) {
             if($route->sourcePinId == $startRoute->targetPinId && !in_array($route, $linkedRoutes, true) && in_array($route->contentTypeId, $allowedTypes, true)) {
-                $linkedRoutes[] = $route;
                 $linkedRoutes = array_merge($linkedRoutes, $this::linkRoutes($routes, $route, $allowedTypes));
             }
         }
