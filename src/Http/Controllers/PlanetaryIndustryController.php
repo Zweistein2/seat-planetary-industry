@@ -291,32 +291,23 @@ class PlanetaryIndustryController extends Controller {
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
 
-    private function linkRoutes(array $routes): array {
+    private function linkRoutes(array $routes, Route $startRoute): array {
         $sourceToRoute = [];
-        $targetToRoute = [];
 
         foreach ($routes as $route) {
             $sourceToRoute[$route->sourcePinId] = $route;
-            $targetToRoute[$route->targetPinId] = $route;
         }
 
         $linkedRoutes = [];
-        $visited = [];
 
-        foreach ($routes as $route) {
-            if (!isset($targetToRoute[$route->sourcePinId]) && !isset($visited[$route->routeId])) {
-                $currentRoute = $route;
-                $chain = [];
-                while (isset($sourceToRoute[$currentRoute->targetPinId])) {
-                    $chain[] = $currentRoute;
-                    $visited[$currentRoute->routeId] = true;
-                    $currentRoute = $sourceToRoute[$currentRoute->targetPinId];
-                }
-                $chain[] = $currentRoute;
-                $visited[$currentRoute->routeId] = true;
-                $linkedRoutes[] = $chain;
-            }
+        $currentRoute = $startRoute;
+        $chain = [];
+        while (isset($sourceToRoute[$currentRoute->targetPinId])) {
+            $chain[] = $currentRoute;
+            $currentRoute = $sourceToRoute[$currentRoute->targetPinId];
         }
+        $chain[] = $currentRoute;
+        $linkedRoutes[] = $chain;
 
         return $linkedRoutes;
     }
