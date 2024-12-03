@@ -309,7 +309,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $routes = $this::linkRoutes($userPlanets->planets[0]->routes, $test, $types);
+        $routes = $this::linkRoutes([], $userPlanets->planets[0]->routes, $test, $types);
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'routes', 'types'));
 
@@ -317,18 +317,18 @@ class PlanetaryIndustryController extends Controller {
     }
 
     /**
+     * @param Route[] $linkedRoutes the route-chain to be extended
      * @param Route[] $routes the routes to be searched through
      * @param Route $startRoute the route to start the search from
      * @param int[] $allowedTypes the allowed items types on the route
      * @return Route[] the linked routes
      */
-    private function linkRoutes(array $routes, Route $startRoute, array $allowedTypes): array {
-        $linkedRoutes = [];
+    private function linkRoutes(array $linkedRoutes, array $routes, Route $startRoute, array $allowedTypes): array {
         $linkedRoutes = array_merge($linkedRoutes, [$startRoute]);
 
         foreach($routes as $route) {
             if($route->sourcePinId == $startRoute->targetPinId && !in_array($route, $linkedRoutes, true) && in_array($route->contentTypeId, $allowedTypes, true)) {
-                $linkedRoutes = array_merge($linkedRoutes, $this::linkRoutes($routes, $route, $allowedTypes));
+                $linkedRoutes = $this::linkRoutes($linkedRoutes, $routes, $route, $allowedTypes);
             }
         }
 
