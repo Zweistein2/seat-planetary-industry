@@ -65,10 +65,6 @@ class PlanetaryIndustryController extends Controller {
             $year = (int)date('Y', $datum);
         }
 
-        $totalPriceExtracted = 0.0;
-        $totalAmountExtracted = 0;
-        $totalVolumeExtracted = 0.0;
-
         $decayFactor = 0.012;
         $noiseFactor = 0.8;
         // $decayFactor = DB::table('dgmTypeAttributes')
@@ -199,6 +195,8 @@ class PlanetaryIndustryController extends Controller {
                             $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
                             $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
                             $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->volumeExtracted;
+
+                            echo($planetExtractor->priceExtracted);
                         }
 
                         $userPlanet->extractors[] = $planetExtractor;
