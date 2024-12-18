@@ -298,26 +298,6 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        $userPlanets = array();
-
-        foreach($characters as $character) {
-            $planets = DB::table('character_planets')
-                ->select('planet_id', 'solar_system_id', 'planet_type')
-                ->where('character_id', '=', $character)
-                ->get();
-
-            if (!$planets->isEmpty()) {
-                foreach ($planets as $planet) {
-                    $userPlanets[] = DB::table('character_planet_pins as pi')
-                        ->select('pi.pin_id', 'pi.install_time', 'pi.expiry_time', 'pi.last_cycle_start', 'ex.product_type_id', 'ex.cycle_time', 'ex.qty_per_cycle')
-                        ->join('character_planet_extractors as ex', 'ex.pin_id', '=', 'pi.pin_id')
-                        ->where('pi.planet_id', '=', $planet->planet_id)
-                        ->where('pi.character_id', '=', $character)
-                        ->get();
-                }
-            }
-        }
-
         return view('planetaryIndustry::debug', compact('userPlanets', 'linkedCharacters'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
