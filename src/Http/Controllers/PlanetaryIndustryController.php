@@ -84,7 +84,7 @@ class PlanetaryIndustryController extends Controller {
             ->get();
 
         foreach($characters as $character) {
-            if($character->character_id != $maincharacter_id) {
+            if($character != $maincharacter_id) {
                 break;
             }
 
