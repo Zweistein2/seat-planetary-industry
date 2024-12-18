@@ -84,6 +84,10 @@ class PlanetaryIndustryController extends Controller {
             ->get();
 
         foreach($characters as $character) {
+            if($character->character_id != $maincharacter_id) {
+                break;
+            }
+
             $planets = DB::table('character_planets')
                 ->select('planet_id', 'solar_system_id', 'planet_type')
                 ->where('character_id', '=', $character)
@@ -195,8 +199,6 @@ class PlanetaryIndustryController extends Controller {
                             $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
                             $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
                             $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->volumeExtracted;
-
-                            echo($planetExtractor->priceExtracted);
                         }
 
                         $userPlanet->extractors[] = $planetExtractor;
@@ -302,7 +304,7 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
-        return view('planetaryIndustry::debug', compact('userPlanets'));
+        return view('planetaryIndustry::debug', compact('userPlanets', 'linkedCharacters'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
     }
