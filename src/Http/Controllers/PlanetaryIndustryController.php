@@ -160,7 +160,9 @@ class PlanetaryIndustryController extends Controller {
                         $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
                         $runtimeMinutes = $runtime->h * 60 + $runtime->i;
                         $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
+                        print_r($cycles);
                         $cycleFactor = $planetExtractor->cycleTime / (60 * 15);
+                        print_r($cycleFactor);
 
                         $noise1 = 1.0 / 12.0;
                         $noise2 = 1.0 / 5.0;
@@ -297,8 +299,6 @@ class PlanetaryIndustryController extends Controller {
                 $userPlanets->planets[] = $userPlanet;
             }
         }
-
-        print_r($userPlanets);
 
         return view('planetaryIndustry::debug', compact('userPlanets', 'linkedCharacters'));
 
