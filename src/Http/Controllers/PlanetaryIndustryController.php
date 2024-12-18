@@ -153,50 +153,46 @@ class PlanetaryIndustryController extends Controller {
                         }
                     }
 
-                    if($extractor->install_time == $extractor->last_cycle_start) {
-                        $planetExtractor->initialQtyPerCycle = $extractor->qty_per_cycle;
+                    $planetExtractor->initialQtyPerCycle = $extractor->qty_per_cycle;
 
-                        $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
-                        $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
-                        $runtimeMinutes = $runtime->h * 60 + $runtime->i;
-                        $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
-                        print_r($cycles);
-                        $cycleFactor = $planetExtractor->cycleTime / (60 * 15);
-                        print_r($cycleFactor);
+                    $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
+                    $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime);
+                    $runtimeMinutes = $runtime->h * 60 + $runtime->i;
+                    $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
+                    $cycleFactor = $planetExtractor->cycleTime / (60 * 15);
 
-                        $noise1 = 1.0 / 12.0;
-                        $noise2 = 1.0 / 5.0;
-                        $noise3 = 1.0 / 2.0;
+                    $noise1 = 1.0 / 12.0;
+                    $noise2 = 1.0 / 5.0;
+                    $noise3 = 1.0 / 2.0;
 
-                        $totalYield = 0.0;
+                    $totalYield = 0.0;
 
-                        for($cycle = 0; $cycle < $cycles; $cycle++) {
-                            $yield = 0;
+                    for($cycle = 0; $cycle < $cycles; $cycle++) {
+                        $yield = 0;
 
-                            $point = ($cycle + 0.5) * $cycleFactor;
-                            $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $point * $decayFactor);
-                            $sinA = cos($shift + $point * $noise1);
-                            $sinB = cos(($shift / 2) + $point * $noise2);
-                            $sinC = cos($point * $noise3);
-                            $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
+                        $point = ($cycle + 0.5) * $cycleFactor;
+                        $decay = $planetExtractor->initialQtyPerCycle / (1.0 + $point * $decayFactor);
+                        $sinA = cos($shift + $point * $noise1);
+                        $sinB = cos(($shift / 2) + $point * $noise2);
+                        $sinC = cos($point * $noise3);
+                        $sinX = max(($sinA + $sinB + $sinC) / 3.0, 0.0);
 
-                            $yield += $cycleFactor * ($decay * (1 + $noiseFactor * $sinX));
-                            $totalYield = $totalYield + floor($yield);
+                        $yield += $cycleFactor * ($decay * (1 + $noiseFactor * $sinX));
+                        $totalYield = $totalYield + floor($yield);
 
-                            $cycleEndFromInstall = new DateInterval('PT'.($cycle + 1) * $planetExtractor->cycleTime.'S');
-                            $cycleEnd = $planetExtractor->installTime->add($cycleEndFromInstall);
+                        $cycleEndFromInstall = new DateInterval('PT'.($cycle + 1) * $planetExtractor->cycleTime.'S');
+                        $cycleEnd = $planetExtractor->installTime->add($cycleEndFromInstall);
 
-                            $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield, $cycleEnd);
-                        }
-
-                        $planetExtractor->amountExtracted = $totalYield;
-                        $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId)->volume *  $planetExtractor->amountExtracted;
-                        $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
-
-                        $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
-                        $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
-                        $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->volumeExtracted;
+                        $planetExtractor->cycles[] = new ExtractorCycle($cycle + 1, $yield, $totalYield, $cycleEnd);
                     }
+
+                    $planetExtractor->amountExtracted = $totalYield;
+                    $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId)->volume *  $planetExtractor->amountExtracted;
+                    $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
+
+                    $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
+                    $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
+                    $userPlanet->volumeExtracted = $userPlanet->volumeExtracted + $planetExtractor->volumeExtracted;
 
                     $userPlanet->extractors[] = $planetExtractor;
                 }
