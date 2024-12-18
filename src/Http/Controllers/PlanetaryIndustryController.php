@@ -84,7 +84,7 @@ class PlanetaryIndustryController extends Controller {
             ->get();
 
         foreach($characters as $character) {
-            if($character != 2120993222) {
+            if($character != "2120993222") {
                 break;
             }
 
