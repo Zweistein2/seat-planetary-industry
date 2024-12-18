@@ -11,6 +11,7 @@
 @section('full')
     <div class="row">
         @dump($userPlanets)
+        @dump($linkedCharacters)
         @include('web::partials.type', ['type_id' => '2267', 'type_name' => 'Carbon Compounds'])
     </div>
 @stop
