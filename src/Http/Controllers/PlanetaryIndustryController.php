@@ -84,10 +84,6 @@ class PlanetaryIndustryController extends Controller {
             ->get();
 
         foreach($characters as $character) {
-            if($character != "2120993222") {
-                break;
-            }
-
             $planets = DB::table('character_planets')
                 ->select('planet_id', 'solar_system_id', 'planet_type')
                 ->where('character_id', '=', $character)
@@ -195,6 +191,8 @@ class PlanetaryIndustryController extends Controller {
                             $planetExtractor->amountExtracted = $totalYield;
                             $planetExtractor->volumeExtracted = ItemHelper::getTypeInfo($planetExtractor->productTypeId)->volume *  $planetExtractor->amountExtracted;
                             $planetExtractor->priceExtracted = PriceHelper::getItemPriceById($planetExtractor->productTypeId) *  $planetExtractor->amountExtracted;
+
+                            echo($totalYield . "<br>");
 
                             $userPlanet->priceExtracted = $userPlanet->priceExtracted + $planetExtractor->priceExtracted;
                             $userPlanet->amountExtracted = $userPlanet->amountExtracted + $planetExtractor->amountExtracted;
