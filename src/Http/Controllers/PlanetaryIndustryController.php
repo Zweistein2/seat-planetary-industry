@@ -298,6 +298,8 @@ class PlanetaryIndustryController extends Controller {
             }
         }
 
+        print_r($userPlanets);
+
         return view('planetaryIndustry::debug', compact('userPlanets', 'linkedCharacters'));
 
         return view('planetaryIndustry::home', compact('character_name', 'labels', 'planets', 'linkedCharacters'));
