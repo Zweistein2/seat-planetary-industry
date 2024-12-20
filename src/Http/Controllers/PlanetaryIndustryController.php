@@ -157,8 +157,11 @@ class PlanetaryIndustryController extends Controller {
 
                     $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
                     $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime, true);
+                    $runtime2 = $planetExtractor->installTime->diff($planetExtractor->expiryTime, true);
                     echo("ExtractorId: ".$planetExtractor->pinId."<br>");
-                    echo("Runtime: ".$runtime->format('Y-m-d H:i:s')."<br>");
+                    echo("ExpiryTime: ".$planetExtractor->expiryTime->format('Y-m-d H:i:s')."<br>");
+                    echo("Runtime: ".$runtime->format('%Y-%M-%D %H:%I:%S')."<br>");
+                    echo("Runtime2: ".$runtime2->format('%Y-%M-%D %H:%I:%S')."<br>");
                     $runtimeMinutes = $runtime->d * 24 * 0 + $runtime->h * 60 + $runtime->i;
                     echo("Runtime in Minutes: ".$runtimeMinutes."<br>");
                     $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
