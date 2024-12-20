@@ -158,11 +158,8 @@ class PlanetaryIndustryController extends Controller {
                     $shift = pow($planetExtractor->initialQtyPerCycle, 0.7);
                     $runtime = $planetExtractor->expiryTime->diff($planetExtractor->installTime, true);
                     $runtimeMinutes = ($runtime->d * 24 * 60) + ($runtime->h * 60) + ($runtime->i);
-                    echo("Runtime in Minutes: ".$runtimeMinutes."<br>");
                     $cycles = $runtimeMinutes / ($planetExtractor->cycleTime / 60);
-                    echo("Cycles: ".$cycles."<br>");
                     $cycleFactor = $planetExtractor->cycleTime / (60 * 15);
-                    echo("Cycle Factor: ".$cycleFactor."<br>");
 
                     $noise1 = 1.0 / 12.0;
                     $noise2 = 1.0 / 5.0;
